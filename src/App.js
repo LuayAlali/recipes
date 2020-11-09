@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import Recipe from './Recipe';
 import './App.css';
 
 const App = () => {
@@ -6,16 +7,21 @@ const App = () => {
 
   const APP_ID = 'db707132';
   const APP_KEY = '6568bb4a4fed8cd474fb88ddd6b025fe';
-  const exampleReq = 
-   `https://api.edamam.com/search?q=chicken&app_id=${APP_ID}&app_key=${APP_KEY}`;
+  
+  const  [recipes, setRecipes] = useState([]);
 
-  const [counter, setCounter] = useState(0);
 
-  useEffect(() => {
-    console.log('effect has been run');
+  useEffect( () => {
+    getRecipes();
   },[]);
 
 
+  const getRecipes =  async () => {
+    const response = await fetch(`https://api.edamam.com/search?q=chicken&app_id=${APP_ID}&app_key=${APP_KEY}`);
+    const data = await response.json();
+    setRecipes(data.hits);
+    console.log(data.hits);
+  }
 
   return(
     <div className="App">
@@ -25,12 +31,11 @@ const App = () => {
          className="search-button" 
          type="submit">Search</button>
       </form>
-     
-      <h1 onClick = {() => setCounter(counter +1)}>{counter}</h1>
-    </div>
-
+        {recipes.map(recipe => (
+          <Recipe />
+        ))}
+  </div>
   );
-
-}
+};
 
 export default App;
